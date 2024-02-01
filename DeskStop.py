@@ -17,9 +17,9 @@ def main():
 This functions checks to see if the config files exist, if not it creates them
 '''
 def checkFirstBoot():
-    if os.path.isfile(f"{os.getcwd()}\\source.txt"):
-        if os.path.isfile(f"{os.getcwd()}\\target.txt"):
-            if os.path.isfile(f"{os.getcwd()}\\whitelist.txt"):
+    if not os.path.isfile(f"{os.getcwd()}\\source.txt"):
+        if not os.path.isfile(f"{os.getcwd()}\\target.txt"):
+            if not os.path.isfile(f"{os.getcwd()}\\whitelist.txt"):
                 performStartup()
     
 '''
@@ -132,6 +132,20 @@ def performClean():
     targetDir = getTarget()
     whitelist = getWhitelist().rstrip(",").split(",")
 
+    #create sub-directories to sort files into
+    try:
+        os.mkdir(f"{targetDir}\\office")
+        os.mkdir(f"{targetDir}\\office\\excel")
+        os.mkdir(f"{targetDir}\\office\\word")
+        os.mkdir(f"{targetDir}\\office\\powerpoint")
+        os.mkdir(f"{targetDir}\\photos")
+        os.mkdir(f"{targetDir}\\videos")
+        os.mkdir(f"{targetDir}\\text")
+        os.mkdir(f"{targetDir}\\audio")
+        os.mkdir(f"{targetDir}\\other")
+    except FileExistsError:
+        pass
+    
     #iterate through all the source directories and check the file against the whitelist then sort
     for sourceDir in sources:
         files = os.listdir(sourceDir)
@@ -139,19 +153,6 @@ def performClean():
             if file in whitelist:
                 continue
             else:
-                try:
-                    os.mkdir(f"{targetDir}\\office")
-                    os.mkdir(f"{targetDir}\\office\\excel")
-                    os.mkdir(f"{targetDir}\\office\\word")
-                    os.mkdir(f"{targetDir}\\office\\powerpoint")
-                    os.mkdir(f"{targetDir}\\photos")
-                    os.mkdir(f"{targetDir}\\videos")
-                    os.mkdir(f"{targetDir}\\text")
-                    os.mkdir(f"{targetDir}\\audio")
-                    os.mkdir(f"{targetDir}\\other")
-                except FileExistsError:
-                    pass
-                
                 #sort based on extension of file
                 extension = file.split(".")[-1]
                 match extension:
